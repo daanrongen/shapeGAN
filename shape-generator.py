@@ -1,46 +1,57 @@
+from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
+import numpy as np
 import random
-import turtle
+from scipy.interpolate import interp1d
 import math
 
-from PIL import Image, ImageDraw
 from helpers import clip, generatePolygon
 
-# 256x256
-WIDTH = 256
-HEIGHT = 256
-COLORS = [
-    (255, 255, 255),
-    (0, 255, 255),
-    (0, 0, 255),
-    (255, 0, 255),
-    (255, 255, 0),
-    (0, 255, 0),
-]
+# TO DO
+# 1. improve polygon method (D) COMPLETED
+# 2. write all training data (30.000 polygons) (D)
+# 3. set up UAL GPU env (D) COMPLETED
+# 4. set up DCGAN (H)
+# 5. train (GAN)
 
-
-# https://stackoverflow.com/questions/8997099/algorithm-to-generate-random-2d-polygon
+# 128X128
+WIDTH = 128
+HEIGHT = 128
 
 
 def save_image(verts, idx=0):
-    im = Image.new("RGB", (WIDTH, HEIGHT), (0, 0, 0))
+    im = Image.new("RGB", (WIDTH, HEIGHT), (255, 255, 255))
     draw = ImageDraw.Draw(im)
-    draw.polygon(verts, fill=COLORS[random.randint(0, len(COLORS) - 1)])
+    draw.polygon(
+        verts,
+        outline=(0, 0, 0),
+        fill=(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)),
+    )
     im.save(f"polygons/{str(idx)}.png")
 
 
 def create_n_shapes(n):
     for i in range(n):
         verts = generatePolygon(
-            ctrX=WIDTH / 2,
-            ctrY=HEIGHT / 2,
-            aveRadius=80,
-            irregularity=random.uniform(0, 1),
-            spikeyness=random.uniform(0, 0.5),
-            numVerts=random.randint(80, 120),
+            ctrX=random.randint(WIDTH / 4, WIDTH - (WIDTH / 2)),
+            ctrY=random.randint(HEIGHT / 4, HEIGHT - (HEIGHT / 2)),
+            aveRadius=WIDTH / 4,
+            irregularity=random.uniform(0.1, 0.6),
+            spikeyness=0.1,
+            numVerts=20,
         )
 
+        x = [x[0] for x in verts]
+        y = [y[1] for y in verts]
+        t = np.arange(len(x))
+        ti = np.linspace(0, t.max(), 10 * t.size)
+
+        xi = interp1d(t, x, kind="cubic")(ti)
+        yi = interp1d(t, y, kind="cubic")(ti)
+
+        verts = list(zip(xi, yi))
+        print(verts)
         save_image(verts, i)
 
 
-create_n_shapes(5)
+create_n_shapes(4)
