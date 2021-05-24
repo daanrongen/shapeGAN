@@ -1,2 +1,5 @@
 .vscode/
-polygons/
+polygons/*
+outputs/gallery_generated_128x128/*
+outputs/generated_128x128/*
+outputs/models/*

@@ -17,6 +17,7 @@ from helpers import clip, generatePolygon
 # 128X128
 WIDTH = 128
 HEIGHT = 128
+NUM_IMAGES = 80000
 
 
 def save_image(verts, idx=0):
@@ -33,8 +34,8 @@ def save_image(verts, idx=0):
 def create_n_shapes(n):
     for i in range(n):
         verts = generatePolygon(
-            ctrX=random.randint(WIDTH / 4, WIDTH - (WIDTH / 2)),
-            ctrY=random.randint(HEIGHT / 4, HEIGHT - (HEIGHT / 2)),
+            ctrX=(WIDTH / 2 + random.randint(-WIDTH / 4, WIDTH / 4)),
+            ctrY=(HEIGHT / 2 + random.randint(-HEIGHT / 4, HEIGHT / 4)),
             aveRadius=WIDTH / 4,
             irregularity=random.uniform(0.1, 0.6),
             spikeyness=0.1,
@@ -50,8 +51,7 @@ def create_n_shapes(n):
         yi = interp1d(t, y, kind="cubic")(ti)
 
         verts = list(zip(xi, yi))
-        print(verts)
         save_image(verts, i)
 
 
-create_n_shapes(4)
+create_n_shapes(NUM_IMAGES)
