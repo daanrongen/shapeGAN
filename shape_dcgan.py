@@ -172,11 +172,12 @@ class shapeGAN:
         plt.savefig("image_at_epoch_{:04d}.png".format(epoch))
         plt.show()
 
-    def restore_latest(self):
-        self.checkpoint.restore(tf.train.latest_checkpoint(self.checkpoint_dir)) 
+    def restore_latest(self, checkpoint_dir="./training_checkpoints"):
+        self.checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir)) 
 
 
 shapegan = shapeGAN(batch_size=128)
+shapegan.restore_latest()
 # https://keras.io/api/preprocessing/image/
 # dataset = keras.preprocessing.image_dataset_from_directory(
 #     "path/to/img/directory", batch_size=128, image_size=(128, 128)
