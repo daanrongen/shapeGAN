@@ -25,6 +25,8 @@ import os
 import argparse
 from ast import literal_eval
 from cv2 import imwrite
+from tensorflow.python.client import device_lib
+
 
 NUM_IMAGES = 80000
 
@@ -311,6 +313,9 @@ class DCGAN:
                 os.makedirs(path)
                 imwrite(path + f"/{modifier}_{i}.png", img_array)
 
+
+print(device_lib.list_local_devices())
+print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices("GPU")))
 
 shapegan = DCGAN(
     "outputs/models/discrim.h5", "outputs/models/generat.h5", "outputs", (128, 128)
